@@ -32,7 +32,7 @@ import static com.jueye.nchuojbackenduserservice.service.impl.UserServiceImpl.SA
  
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/")
 @Slf4j
 public class UserController {
 

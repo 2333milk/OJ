@@ -1,4 +1,4 @@
-package com.jueye.nchuojbackendquestionservice.Mq;
+package com.jueye.nchuojbackendjudgeservice.mq;
 
 import com.jueye.nchuojbackendserviceclient.service.JudgeFeignClient;
 import com.rabbitmq.client.Channel;
@@ -28,7 +28,7 @@ public class JudgeMessageConsumer {
             judgeFeignClient.doJudge(questionSubmitId);
             channel.basicAck(deliveryTag, false);
         }catch (Exception e){
-            channel.basicNack(deliveryTag,false,true);
+            channel.basicNack(deliveryTag,false,false);
         }
     }
 }

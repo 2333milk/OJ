@@ -1,10 +1,11 @@
-package com.jueye.nchuojbackendjudgeservice.judge.controller;
+package com.jueye.nchuojbackendjudgeservice.controller.inner;
 
 import com.jueye.nchuojbackendjudgeservice.judge.JudgeService;
 import com.jueye.nchuojbackendmodel.model.entity.QuestionSubmit;
 import com.jueye.nchuojbackendserviceclient.service.JudgeFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -15,7 +16,8 @@ import javax.annotation.Resource;
  *
  
  */
-@RestController("/inner")
+@RestController
+@RequestMapping("/inner")
 @Slf4j
 public class JudgeInnerController implements JudgeFeignClient {
 

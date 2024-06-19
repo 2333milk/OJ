@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  
  */
 @RestController
-@RequestMapping("/question")
+@RequestMapping("/")
 @Slf4j
 public class QuestionController {
 

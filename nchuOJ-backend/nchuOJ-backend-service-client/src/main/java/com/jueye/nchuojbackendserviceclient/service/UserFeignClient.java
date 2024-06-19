@@ -25,21 +25,21 @@ import static com.jueye.nchuojbackendcommon.constant.UserConstant.USER_LOGIN_STA
 @FeignClient(name = "nchuOJ-backend-user-service",path = "/api/user/inner")
 public interface UserFeignClient {
     /**
-     * 根据用户id获取用户信息
-      * @param userld
+     * 根据 id 获取用户
+     * @param userId
      * @return
      */
-    @GetMapping("/get/{id}")
-    User getByld(@RequestParam("userld") long userld);
+    @GetMapping("/get/id")
+    User getById(@RequestParam("userId") long userId);
 
 
     /**
-     * 获取用户信息
-     * @param userIdSet
+     * 根据 id 获取用户列表
+     * @param idList
      * @return
      */
     @GetMapping("/get/ids")
-    List<User> listBylds(@RequestParam("userIdSet")Collection<Long> userIdSet);
+    List<User> listByIds(@RequestParam("idList") Collection<Long> idList);
 
 
 

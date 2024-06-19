@@ -144,7 +144,7 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         }
         // 1. 关联查询用户信息
         Set<Long> userIdSet = questionSubmitList.stream().map(QuestionSubmit::getUserId).collect(Collectors.toSet());
-        Map<Long, List<User>> userIdUserListMap = userFeignClient.listBylds(userIdSet).stream()
+        Map<Long, List<User>> userIdUserListMap = userFeignClient.listByIds(userIdSet).stream()
                 .collect(Collectors.groupingBy(User::getId));
         // 1. 关联查询题目信息
         Set<Long> questionIdSet = questionSubmitList.stream().map(QuestionSubmit::getQuestionId).collect(Collectors.toSet());

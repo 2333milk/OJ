@@ -123,7 +123,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         Long userId = question.getUserId();
         User user = null;
         if (userId != null && userId > 0) {
-            user = userFeignClient.getByld(userId);
+            user = userFeignClient.getById(userId);
         }
         UserVO userVO = userFeignClient.getUserVO(user);
         questionVO.setUserVO(userVO);
@@ -140,7 +140,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         }
         // 1. 关联查询用户信息
         Set<Long> userIdSet = questionList.stream().map(Question::getUserId).collect(Collectors.toSet());
-        Map<Long, List<User>> userIdUserListMap = userFeignClient.listBylds(userIdSet).stream()
+        Map<Long, List<User>> userIdUserListMap = userFeignClient.listByIds(userIdSet).stream()
                 .collect(Collectors.groupingBy(User::getId));
 
         // 填充信息

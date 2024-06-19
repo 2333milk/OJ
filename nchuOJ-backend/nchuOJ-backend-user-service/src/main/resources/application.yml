@@ -7,10 +7,11 @@ server:
     session:
       cookie:
         max-age: 2592000
+        path: /api
 # 公共配置文件
 spring:
   application:
-    name: nchuoj-backend-user-service
+    name: nchuOJ-backend-user-service
   # 默认 dev 环境
   profiles:
     active: dev
@@ -64,14 +65,5 @@ mybatis-plus:
       logic-delete-field: isDelete # 全局逻辑删除的实体字段名
       logic-delete-value: 1 # 逻辑已删除值（默认为 1）
       logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）
-# 接口文档配置
 knife4j:
   enable: true
-  openapi:
-    title: "接口文档"
-    version: 1.0
-    group:
-      default:
-        api-rule: package
-        api-rule-resources:
-          - com.nchu.nchuoj.controller

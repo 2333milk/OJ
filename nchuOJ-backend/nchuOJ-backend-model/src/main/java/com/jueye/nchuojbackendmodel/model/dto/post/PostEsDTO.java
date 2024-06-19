@@ -3,10 +3,10 @@ package com.jueye.nchuojbackendmodel.model.dto.post;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
 import com.jueye.nchuojbackendmodel.model.entity.Post;
-import io.github.classgraph.json.Id;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
