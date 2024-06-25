@@ -12,7 +12,7 @@ import GlobalHeader from '@/components/GlobalHeader.vue';
             <a-layout-content class="context">
                 <RouterView />
             </a-layout-content>
-            <a-layout-footer class="footer">南昌航空大学OJ判题系统----by-212015班-张丽星</a-layout-footer>
+            <a-layout-footer class="footer">南昌航空大学OJ判题系统</a-layout-footer>
         </a-layout>
         
     </div>

@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 public class QuestionAddRequest implements Serializable {
 
+
     /**
      * 标题
      */

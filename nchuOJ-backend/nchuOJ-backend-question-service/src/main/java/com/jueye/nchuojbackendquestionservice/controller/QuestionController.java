@@ -1,6 +1,7 @@
 package com.jueye.nchuojbackendquestionservice.controller;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jueye.nchuojbackendcommon.annotation.AuthCheck;
 import com.jueye.nchuojbackendcommon.common.BaseResponse;
@@ -276,7 +277,7 @@ public class QuestionController {
      * @param request
      * @return 提交记录id
      */
-    @PostMapping("/question_submit/")
+    @PostMapping("/question_submit")
     public BaseResponse<Long> doSubmit(@RequestBody QuestionSubmitAddRequest questionSubmitAddRequest,
                                        HttpServletRequest request) {
         if (questionSubmitAddRequest == null || questionSubmitAddRequest.getQuestionId() <= 0) {
@@ -338,11 +339,12 @@ public class QuestionController {
         long current = questionSubmitQueryRequest.getCurrent();
         long size = questionSubmitQueryRequest.getPageSize();
         // 限制爬虫
+        User loginUser = userFeignClient.getLoginUser(request);
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
+        QueryWrapper<QuestionSubmit> questionSubmitQueryWrapper = questionSubmitService.getQueryWrapper(questionSubmitQueryRequest);
+        questionSubmitQueryWrapper.eq("userId", loginUser.getId());
         Page<QuestionSubmit> questionSubmitPage = questionSubmitService.page(new Page<>(current, size),
-                questionSubmitService.getQueryWrapper(questionSubmitQueryRequest));
-
-        final User loginUser = userFeignClient.getLoginUser(request);
+                questionSubmitQueryWrapper);
         return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionSubmitPage, loginUser));
     }
 

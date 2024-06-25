@@ -16,18 +16,45 @@ const MenuRoute = [
         meta:{
             access:ACCESS_ENUM.USER,
             needLogin:true,
-            ordinary:true,
+            ordinary:false,
         },
         component:()=>import("@/views/question/ListQuestionView.vue")
     },{
         path:'/list/submitQuestion',
-        name:"判题列表",
+        name:"提交记录",
         meta:{
             access:ACCESS_ENUM.USER,
             needLogin:true,
-            ordinary:true,
+            ordinary:false,
         },
         component:()=>import("@/views/question/ListSubmitQuestionView.vue")
+    },{
+        path:'/list/exam',
+        name:"考试列表",
+        meta:{
+            access:ACCESS_ENUM.USER,
+            needLogin:true,
+            ordinary:false,
+        },
+        component:()=>import("@/views/exam/ExamListView.vue")
+    },{
+        path:'/list/examManger',
+        name:"考试管理",
+        meta:{
+            access:ACCESS_ENUM.ADMIN,
+            needLogin:true,
+            ordinary:false,
+        },
+        component:()=>import("@/views/exam/ExamManagerView.vue")
+    },{
+        path:'/list/examResultManger',
+        name:"成绩管理",
+        meta:{
+            access:ACCESS_ENUM.ADMIN,
+            needLogin:true,
+            ordinary:false,
+        },
+        component:()=>import("@/views/exam/ExamResultManagerView.vue")
     },
 ]
 

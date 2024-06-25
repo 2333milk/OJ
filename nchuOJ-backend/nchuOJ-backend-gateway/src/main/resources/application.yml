@@ -26,6 +26,10 @@ spring:
           uri: lb://nchuOJ-backend-judge-service
           predicates:
             - Path=/api/judge/**
+        - id: nchuOJ-backend-sendbox-service
+          uri: lb://nchuOJ-backend-sendbox-service
+          predicates:
+            - Path=/api/sendbox/**
 
   application:
     name: nchuOJ-backend-gateway

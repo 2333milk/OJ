@@ -1,5 +1,6 @@
 package com.jueye.nchuojbackendquestionservice.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -16,6 +17,8 @@ import com.jueye.nchuojbackendmodel.model.entity.User;
 import com.jueye.nchuojbackendmodel.model.enums.QuestionSubmitLanguageEnum;
 import com.jueye.nchuojbackendmodel.model.enums.QuestionSubmitStatusEnum;
 import com.jueye.nchuojbackendmodel.model.vo.QuestionSubmitVO;
+import com.jueye.nchuojbackendmodel.model.vo.QuestionVO;
+import com.jueye.nchuojbackendmodel.model.vo.UserVO;
 import com.jueye.nchuojbackendquestionservice.Mq.JudgeMessageProducer;
 import com.jueye.nchuojbackendquestionservice.mapper.QuestionSubmitMapper;
 import com.jueye.nchuojbackendquestionservice.service.QuestionService;
@@ -166,10 +169,10 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
 
                     // 只有当user和question不是null时才设置值
                     if (user != null) {
-                        questionSubmitVO.setUserVO(userFeignClient.getUserVO(user));
+                        questionSubmitVO.setUserVO(BeanUtil.copyProperties(user, UserVO.class));
                     }
                     if (question != null) {
-                        questionSubmitVO.setQuestionVO(questionService.getQuestionVO(question));
+                        questionSubmitVO.setQuestionVO(QuestionVO.objToVo(question));
                     }
                     return questionSubmitVO;
                 })

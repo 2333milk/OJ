@@ -49,28 +49,20 @@ const routes = [
                 meta:{
                     access:ACCESS_ENUM.USER,
                     needLogin:true,
-                    ordinary:true,
+                    ordinary:false,
                 },
                 component:()=>import("@/views/question/DoQuestionView.vue")
-            },{
-                path:'/submit/addQuestion',
-                name:"新增题目",
-                meta:{
-                    access:ACCESS_ENUM.ADMIN,
-                    needLogin:true,
-                    ordinary:false,
-                },
-                component:()=>import("@/views/question/AddQuestionView.vue")
             },
             {
-                path:'/submit/editQuestion',
-                name:"修改题目",
+                path:'/submit/exam/:id',
+                name:"在线考试",
+                props:true,
                 meta:{
-                    access:ACCESS_ENUM.ADMIN,
+                    access:ACCESS_ENUM.USER,
                     needLogin:true,
                     ordinary:false,
                 },
-                component:()=>import("@/views/question/EditQuestionView.vue")
+                component:()=>import("@/views/exam/DoExamView.vue")
             }
         ]
     },{
@@ -105,18 +97,45 @@ const routes = [
                 meta:{
                     access:ACCESS_ENUM.USER,
                     needLogin:true,
-                    ordinary:true,
+                    ordinary:false,
                 },
                 component:()=>import("@/views/question/ListQuestionView.vue")
             },{
                 path:'/list/submitQuestion',
-                name:"判题列表",
+                name:"判题记录列表",
                 meta:{
                     access:ACCESS_ENUM.USER,
                     needLogin:true,
-                    ordinary:true,
+                    ordinary:false,
                 },
                 component:()=>import("@/views/question/ListSubmitQuestionView.vue")
+            },{
+                path:'/list/exam',
+                name:"考试列表",
+                meta:{
+                    access:ACCESS_ENUM.USER,
+                    needLogin:true,
+                    ordinary:false,
+                },
+                component:()=>import("@/views/exam/ExamListView.vue")
+            },{
+                path:'/list/examManger',
+                name:"考试管理列表",
+                meta:{
+                    access:ACCESS_ENUM.ADMIN,
+                    needLogin:true,
+                    ordinary:false,
+                },
+                component:()=>import("@/views/exam/ExamManagerView.vue")
+            },{
+                path:'/list/examResultManger',
+                name:"考试成绩管理列表",
+                meta:{
+                    access:ACCESS_ENUM.ADMIN,
+                    needLogin:true,
+                    ordinary:false,
+                },
+                component:()=>import("@/views/exam/ExamResultManagerView.vue")
             },
         ]
     }

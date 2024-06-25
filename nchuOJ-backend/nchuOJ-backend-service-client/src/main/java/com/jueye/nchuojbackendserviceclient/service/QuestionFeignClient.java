@@ -1,12 +1,16 @@
 package com.jueye.nchuojbackendserviceclient.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jueye.nchuojbackendmodel.model.entity.Question;
 import com.jueye.nchuojbackendmodel.model.entity.QuestionSubmit;
+import com.jueye.nchuojbackendmodel.model.vo.QuestionVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
 * @author ASUS
@@ -20,7 +24,7 @@ public interface QuestionFeignClient{
      * @param questionId
      * @return
      */
-    @GetMapping("/get/{id}")
+    @GetMapping("/get/id")
     Question getById(@RequestParam("questionId") Long questionId);
 
     /**
@@ -28,7 +32,7 @@ public interface QuestionFeignClient{
      * @param questionSubmitId
      * @return
      */
-    @GetMapping("/question_submit/get/{id}")
+    @GetMapping("/question_submit/get/id")
     QuestionSubmit getByld(@RequestParam("questionSubmitId") Long questionSubmitId);
 
     /**
@@ -39,4 +43,9 @@ public interface QuestionFeignClient{
     @PostMapping("/question_submit/update")
     boolean updateByld(@RequestBody QuestionSubmit questionSubmitUpdate);
 
+    @PostMapping("/get/vo")
+    QuestionVO getQuestionVO(@RequestBody Question question);
+
+    @PostMapping("/question_submit/list")
+    List<QuestionSubmit> list(QueryWrapper<QuestionSubmit> questionSubmitQueryWrapper);
 }

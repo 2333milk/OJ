@@ -58,9 +58,6 @@ const onPageChange = (page: number) => {
 const columns = [{
   title: '题目标题',
   dataIndex: 'questionVO.title',
-}, {
-  title: '提交用户',
-  dataIndex: 'userVO.userName',
 },{
   title: '判题信息',
   dataIndex: 'judgeInfo.message',
@@ -97,7 +94,7 @@ const handleSubmit = () => {
   <div id="listQuestion">
     <a-form :model="searchParams" layout="inline" @submit="handleSubmit">
       <a-form-item field="language" labal="编程语言">
-        <a-select  v-model="searchParams.language" placeholder="请选择编程语言">
+        <a-select :allow-clear="true"  v-model="searchParams.language" style="min-width: 220px;" placeholder="请选择编程语言">
           <a-option>java</a-option>
 <!--          <a-option>c++</a-option>-->
 <!--          <a-option>go</a-option>-->

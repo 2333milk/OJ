@@ -1,5 +1,6 @@
 package com.jueye.nchuojbackendquestionservice.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -151,7 +152,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
             if (userIdUserListMap.containsKey(userId)) {
                 user = userIdUserListMap.get(userId).get(0);
             }
-            questionVO.setUserVO(userFeignClient.getUserVO(user));
+            questionVO.setUserVO(BeanUtil.copyProperties(user, UserVO.class));
             return questionVO;
         }).collect(Collectors.toList());
         questionVOPage.setRecords(questionVOList);

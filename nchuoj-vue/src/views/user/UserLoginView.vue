@@ -42,22 +42,28 @@ const rules = {
 
 <template>
   <div id="userLogin">
-    <h2>用户登录</h2>
-    <a-form :model="form" style="max-width: 480px;margin: auto;" @submit="handleSubmit" :rules="rules" @submit-success="handleSubmit">
-      <a-form-item field="userAccount" label="账号">
-        <a-input v-model="form.userAccount" placeholder="请输入账号" />
-      </a-form-item>
-      <a-form-item field="userPassword" label="密码">
-        <a-input-password v-model="form.userPassword" placeholder="请输入密码" />
-      </a-form-item>
-      <a-form-item>
-        <a-button type="primary" html-type="submit-success" long>登录</a-button>
-      </a-form-item>
-      <a-form-item>
-        <a-link href="/user/register">注册</a-link>
-      </a-form-item>
-    </a-form>
+    <div class="form-card">
+      <h2>用户登录</h2>
+      <a-form :model="form" style="max-width: 480px;margin: auto;" @submit="handleSubmit" :rules="rules" @submit-success="handleSubmit">
+        <a-form-item field="userAccount" label="账号">
+          <a-input v-model="form.userAccount" placeholder="请输入账号" />
+        </a-form-item>
+        <a-form-item field="userPassword" label="密码">
+          <a-input-password v-model="form.userPassword" placeholder="请输入密码" />
+        </a-form-item>
+        <a-form-item>
+          <a-button type="primary" html-type="submit-success" long>登录</a-button>
+        </a-form-item>
+        <a-form-item>
+          <a-link href="/user/register">注册</a-link>
+        </a-form-item>
+      </a-form>
+    </div>
   </div>
 
 </template>
-<style scoped></style>
+<style scoped>
+.form-card{
+  margin-top: 21%;
+}
+</style>

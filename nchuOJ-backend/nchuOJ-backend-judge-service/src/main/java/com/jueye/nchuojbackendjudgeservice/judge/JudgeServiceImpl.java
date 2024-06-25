@@ -3,9 +3,6 @@ package com.jueye.nchuojbackendjudgeservice.judge;
 import cn.hutool.json.JSONUtil;
 import com.jueye.nchuojbackendcommon.common.ErrorCode;
 import com.jueye.nchuojbackendcommon.exception.BusinessException;
-import com.jueye.nchuojbackendjudgeservice.judge.JudgeService;
-import com.jueye.nchuojbackendjudgeservice.judge.codeSendbox.CodeSendbox;
-import com.jueye.nchuojbackendjudgeservice.judge.codeSendbox.CodeSendboxFactory;
 import com.jueye.nchuojbackendjudgeservice.judge.codeSendbox.CodeSendboxProxy;
 import com.jueye.nchuojbackendjudgeservice.judge.strategy.JudgeContext;
 import com.jueye.nchuojbackendjudgeservice.judge.strategy.JudgeManager;
@@ -32,6 +29,9 @@ public class JudgeServiceImpl implements JudgeService {
     @Resource
     private JudgeManager judgeManager;
 
+    @Resource
+    private CodeSendboxProxy codeSendboxProxy;
+
     @Override
     public QuestionSubmit doJudge(long questionSubmitId) {
         QuestionSubmit questionSubmit = questionFeignClient.getByld(questionSubmitId);
@@ -51,9 +51,6 @@ public class JudgeServiceImpl implements JudgeService {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"题目更新状态错误");
         }
 
-        //调用代码沙箱，获取执行结果
-        CodeSendbox codeSendbox = CodeSendboxFactory.newInstance(type);
-        CodeSendboxProxy codeSendboxProxy = new CodeSendboxProxy(codeSendbox);
         String language = questionSubmit.getLanguage();
         String code = questionSubmit.getCode();
         //获取输入用例
@@ -65,7 +62,7 @@ public class JudgeServiceImpl implements JudgeService {
                 .inputlist(inputList)
                 .language(language)
                 .build();
-        ExcuteCodeResponse excuteCodeResponse = codeSendboxProxy.excuteCode(excuteCodeRequest);
+        ExcuteCodeResponse excuteCodeResponse = codeSendboxProxy.excuteCode(excuteCodeRequest,type);
 
         //根据执行结果，设置判题信息
         List<String> outputlist = excuteCodeResponse.getOutputlist();

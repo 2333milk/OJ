@@ -53,7 +53,7 @@ const onPageChange = (page: number) => {
     }
 }
 const columns = [{
-    title: '项目名称',
+    title: '题目名称',
     dataIndex: 'title',
 }, {
     title: '标签',
@@ -78,6 +78,8 @@ const handleSubmit = () => {
         current:1,
     }
 };
+
+
 </script>
 
 <template>

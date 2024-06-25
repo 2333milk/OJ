@@ -19,7 +19,7 @@ public class Question implements Serializable {
     /**
      * id
      */
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
@@ -66,6 +66,11 @@ public class Question implements Serializable {
      * 创建用户 id
      */
     private Long userId;
+
+    /**
+     * 状态 1 公开/0 不公开
+     */
+    private Integer status;
 
     /**
      * 创建时间

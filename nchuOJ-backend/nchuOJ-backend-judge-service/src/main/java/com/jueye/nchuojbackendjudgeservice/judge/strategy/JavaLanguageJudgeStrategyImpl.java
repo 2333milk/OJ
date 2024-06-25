@@ -51,8 +51,8 @@ public class JavaLanguageJudgeStrategyImpl implements JudgeStrategy {
         String judgeConfigStr = question.getJudgeConfig();
         JudgeConfig judgeConfig = JSONUtil.toBean(judgeConfigStr, JudgeConfig.class);
 
-        Long needMemory = judgeConfig.getMemoryLimit();
-        Long needTime = judgeConfig.getTimeLimit();
+        int needMemory = judgeConfig.getMemoryLimit();
+        int needTime = judgeConfig.getTimeLimit();
         if(memory > needMemory) {
             judgeInfoMessageEnum = JudgeInfoMessageEnum.MEMORY_LIMIT_EXCEEDED;
             judgeInfoResponse.setMessage(judgeInfoMessageEnum.getValue());

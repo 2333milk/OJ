@@ -14,9 +14,17 @@ import { RouterView } from 'vue-router';
                 </div>
             </a-layout-header>
             <a-layout-content class="context">
-                <RouterView />
+                <a-row class="grid-demo">
+                    <a-col :span="12">
+                        <img style="width: 100%;" src="../assets/code.jpg" />
+                    </a-col>
+                    <a-col :span="12">
+                        <RouterView />
+                    </a-col>
+                </a-row>
+
             </a-layout-content>
-            <a-layout-footer class="footer">南昌航空大学OJ判题系统----by-212015班-张丽星</a-layout-footer>
+            <a-layout-footer class="footer">南昌航空大学OJ判题系统</a-layout-footer>
         </a-layout>
 
     </div>
@@ -24,7 +32,7 @@ import { RouterView } from 'vue-router';
 
 <style scoped>
 #userLayout {
-    background: url(&quot;https://gw.alipayobjects.com/zos/rmsportal/FfdJeJRQWjEeGTpqgBKj.png&quot;) 0% 0% / 100% 100%;
+
     text-align: center;
     display: flex;
 }

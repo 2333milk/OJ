@@ -10,7 +10,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
-@SpringBootApplication(exclude = {})
+@SpringBootApplication
 @MapperScan("com.jueye.nchuojbackenduserservice.mapper")
 @EnableScheduling
 //开启服务发现客户端
