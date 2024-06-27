@@ -1,5 +1,7 @@
 package com.jueye.nchuojbackendsendboxservice.Controller;
 
+import com.jueye.nchuojbackendcommon.common.BaseResponse;
+import com.jueye.nchuojbackendcommon.common.ResultUtils;
 import com.jueye.nchuojbackendmodel.model.dto.sandbox.ExcuteCodeRequest;
 import com.jueye.nchuojbackendmodel.model.dto.sandbox.ExcuteCodeResponse;
 import com.jueye.nchuojbackendsendboxservice.impl.JavaNativeCodeSendbox;
@@ -20,16 +22,10 @@ public class SendboxController {
 
 
     @PostMapping("/executeCode")
-    public ExcuteCodeResponse executeCode(@RequestBody ExcuteCodeRequest excuteCodeRequest, HttpServletRequest request,
-                                          HttpServletResponse response){
-        String authHeader = request.getHeader(AUTH_REQUEST_HEADER);
-        if(!AUTH_REQUEST_SECRET.equals(authHeader)){
-            response.setStatus(403);
-            return null;
-        }
+    public BaseResponse<ExcuteCodeResponse>  executeCode(@RequestBody ExcuteCodeRequest excuteCodeRequest){
         if(excuteCodeRequest==null){
             throw new RuntimeException("请求参数为空");
         }
-        return javaNativeCodeSendbox.excuteCode(excuteCodeRequest);
+        return ResultUtils.success(javaNativeCodeSendbox.excuteCode(excuteCodeRequest));
     }
 }

@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -85,7 +87,43 @@ public class QuestionController {
         long newQuestionId = question.getId();
         return ResultUtils.success(newQuestionId);
     }
-
+    /**
+     * 批量创建
+     *
+     * @param questionAddRequestList
+     * @param request
+     * @return
+     */
+    @PostMapping("/list/add")
+    public BaseResponse<Boolean> addListQuestion(@RequestBody Collection<QuestionAddRequest> questionAddRequestList, HttpServletRequest request) {
+        if (questionAddRequestList.isEmpty()) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        List<Question> questionList = new ArrayList<>();
+        questionAddRequestList.forEach(questionAddRequest -> {
+            Question question = new Question();
+            BeanUtils.copyProperties(questionAddRequest, question);
+            List<String> tags = questionAddRequest.getTags();
+            if (tags != null) {
+                question.setTags(JSONUtil.toJsonStr(tags));
+            }
+            List<JudgeCase> judgeCases = questionAddRequest.getJudgeCase();
+            if(judgeCases!=null){
+                question.setJudgeCase(JSONUtil.toJsonStr(judgeCases));
+            }
+            JudgeConfig judgeConfig = questionAddRequest.getJudgeConfig();
+            if(judgeConfig!=null){
+                question.setJudgeConfig(JSONUtil.toJsonStr(judgeConfig));
+            }
+            questionService.validQuestion(question, true);
+            User loginUser = userFeignClient.getLoginUser(request);
+            question.setUserId(loginUser.getId());
+            questionList.add(question);
+        });
+        boolean result = questionService.saveBatch(questionList);
+        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+        return ResultUtils.success(result);
+    }
     /**
      * 删除
      *

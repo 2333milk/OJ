@@ -1,9 +1,13 @@
 package com.jueye.nchuojbackendexamservice.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jueye.nchuojbackendmodel.model.dto.exam.ExamResultQueryRequest;
 import com.jueye.nchuojbackendmodel.model.entity.ExamResult;
+import com.jueye.nchuojbackendmodel.model.vo.ExamResultVO;
+
+import java.util.List;
 
 /**
 * @author ASUS
@@ -15,4 +19,7 @@ public interface ExamResultService extends IService<ExamResult> {
 
     QueryWrapper<ExamResult> getQueryWrapper(ExamResultQueryRequest examResultQueryRequest);
 
+//    Page<ExamResultVO> getExamResultVOPage(Page<ExamResult> examResultPage);
+
+    List<ExamResultVO> getExamResultVOList(List<ExamResult> examResultList);
 }

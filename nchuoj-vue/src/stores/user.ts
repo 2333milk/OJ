@@ -31,10 +31,7 @@ export const useUserStore = defineStore('user', () => {
     const res = await UserControllerService.userLogoutUsingPost();
     if(res.code === 0) {
       Message.success("登出成功");
-      reSet();
-    }else {
-      Message.error("系统错误:"+res.message);
-    }
+    }reSet();
   }
   return { user,changeUser, login,logout}
 },{

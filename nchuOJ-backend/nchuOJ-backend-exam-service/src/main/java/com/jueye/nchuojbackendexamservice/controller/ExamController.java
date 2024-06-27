@@ -12,6 +12,7 @@ import com.jueye.nchuojbackendexamservice.service.ExamResultService;
 import com.jueye.nchuojbackendexamservice.service.ExamService;
 import com.jueye.nchuojbackendmodel.model.dto.exam.*;
 import com.jueye.nchuojbackendmodel.model.entity.*;
+import com.jueye.nchuojbackendmodel.model.vo.ExamResultVO;
 import com.jueye.nchuojbackendmodel.model.vo.ExamVO;
 import com.jueye.nchuojbackendserviceclient.service.QuestionFeignClient;
 import com.jueye.nchuojbackendserviceclient.service.UserFeignClient;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping("/")
@@ -198,15 +200,15 @@ public class ExamController {
     /**
      * 查看总成绩
      */
-    @PostMapping("/examResult/list/page/vo")
-    public BaseResponse<Page<ExamResult>> getExamResultVoByExamId(@RequestBody ExamResultQueryRequest examResultQueryRequest, HttpServletRequest request){
-        long current = examResultQueryRequest.getCurrent();
-        long size = examResultQueryRequest.getPageSize();
-        // 限制爬虫
-        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        Page<ExamResult> examResultPage = examResultService.page(new Page<>(current, size),
-                examResultService.getQueryWrapper(examResultQueryRequest));
-        return ResultUtils.success(examResultPage);
+    @PostMapping("/examResult/list/vo")
+    public BaseResponse<List<ExamResultVO>> getListExamResultVoByExamId(@RequestBody ExamResultQueryRequest examResultQueryRequest, HttpServletRequest request){
+        User user = userFeignClient.getLoginUser(request);
+        if ( !userFeignClient.isAdmin(user)) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
+        List<ExamResult> examResultList = examResultService.list(examResultService.getQueryWrapper(examResultQueryRequest));
+        List<ExamResultVO> examResultVOList = examResultService.getExamResultVOList(examResultList);
+        return ResultUtils.success(examResultVOList);
     }
 
     /**

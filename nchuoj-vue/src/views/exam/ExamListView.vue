@@ -81,7 +81,7 @@ const startExam = (exam: ExamVO) => {
 const queryScore = async(exam:ExamVO)=>{
     const res = await ExamControllerService.getExamResultVoByUserIdUsingGet(exam.id);
     if(res.code==0){
-        Message.success("成绩:"+res.data?.score);
+        Message.success("分数:"+res.data?.score);
     }else {
         Message.error("成绩查询失败："+res.message);
     }

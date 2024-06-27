@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { type ExamQueryRequest, ExamControllerService, type ExamVO } from '@/api';
+import { type ExamQueryRequest, ExamControllerService, type ExamVO, type ExamResultVO } from '@/api';
 import { Message } from '@arco-design/web-vue';
 import { ref, watchEffect, onMounted } from 'vue';
 import moment from 'moment';
+import * as XLSX from 'xlsx';
 import "moment/dist/locale/zh-cn";
 import { reactive } from 'vue';
+import ScoreEcharts from '@/components/ScoreEcharts.vue';
 const searchParams = ref<ExamQueryRequest>({
     title: '',
     pageSize: 5,
@@ -12,7 +14,7 @@ const searchParams = ref<ExamQueryRequest>({
 });
 const examList = ref([]);
 const total = ref();
-const exam = reactive<ExamVO>({});
+const exam = reactive<ExamVO>({ id: 2 });
 
 /**
  * 加载表格数据
@@ -21,6 +23,7 @@ const loadData = async () => {
     const res = await ExamControllerService.listMyExamVoByPageUsingPost(searchParams.value);
     if (res.code == 0) {
         examList.value = res.data.records;
+
         total.value = res.data.total;
     } else {
         Message.error("加载数据错误," + res.message);
@@ -76,11 +79,37 @@ const handleCancel = () => {
     visible.value = false;
 }
 const watchScores = async (exam: ExamVO) => {
-    exam.id=exam.id;
+    exam.id = exam.id;
+    exam.title = exam.title;
+    visible.value = true;
+}
+type examResult = {
+    id:number,
+    userName:string,
+    score:number
 }
 
 const exportExcel = async (exam: ExamVO) => {
-    
+    const res = await ExamControllerService.getListExamResultVoByExamIdUsingPost({ examId: exam.id });
+    if (res.code == 0) {
+        let examxlsx = [] as examResult[];
+        let examResults = [] as ExamResultVO[];
+        examResults.push(...res.data);
+        examResults.forEach(examResult=>{
+            examxlsx.push({
+                id:examResult.id,
+                userName:examResult.user?.userName,
+                score:examResult.score,
+            } as examResult)
+        })
+        const data = XLSX.utils.json_to_sheet(examxlsx)//此处tableData.value为表格的数据
+        const wb = XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(wb, data, 'score')//test-data为自定义的sheet表名
+        XLSX.writeFile(wb, exam.title+'成绩单.xlsx')//test.xlsx为自定义的文件名
+    }else {
+        Message.error("加载数据错误," + res.message);
+    }
+
 }
 
 </script>
@@ -109,15 +138,15 @@ const exportExcel = async (exam: ExamVO) => {
             <template #optional="{ record }">
                 <a-space size="medium">
                     <a-button type="primary" @click="watchScores(record)">查看</a-button>
-                    <a-button type="primary" @click="exportExcel(record)">导出表格</a-button>
+                    <a-button type="primary" @click="exportExcel(record)">导出</a-button>
                 </a-space>
             </template>
         </a-table>
         <a-modal v-model:visible="visible" @ok="handleOk" @cancel="handleCancel">
             <template #title>
-                {{  }}
+                {{ exam.title }}
             </template>
-            <ScoreEcharts  :exam_id="exam.id" />
+            <ScoreEcharts v-if="visible" :exam_id="exam.id" :exam_title="exam.title" />
         </a-modal>
     </div>
 </template>

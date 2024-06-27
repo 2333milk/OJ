@@ -5,8 +5,8 @@
 import type { BaseResponse_boolean_ } from '../models/BaseResponse_boolean_';
 import type { BaseResponse_ExamResult_ } from '../models/BaseResponse_ExamResult_';
 import type { BaseResponse_ExamVO_ } from '../models/BaseResponse_ExamVO_';
+import type { BaseResponse_List_ExamResultVO_ } from '../models/BaseResponse_List_ExamResultVO_';
 import type { BaseResponse_long_ } from '../models/BaseResponse_long_';
-import type { BaseResponse_Page_ExamResult_ } from '../models/BaseResponse_Page_ExamResult_';
 import type { BaseResponse_Page_ExamVO_ } from '../models/BaseResponse_Page_ExamVO_';
 import type { DeleteRequest } from '../models/DeleteRequest';
 import type { ExamAddRequest } from '../models/ExamAddRequest';
@@ -190,18 +190,18 @@ export class ExamControllerService {
         });
     }
     /**
-     * getExamResultVoByExamId
+     * getListExamResultVoByExamId
      * @param examResultQueryRequest examResultQueryRequest
-     * @returns BaseResponse_Page_ExamResult_ OK
+     * @returns BaseResponse_List_ExamResultVO_ OK
      * @returns any Created
      * @throws ApiError
      */
-    public static getExamResultVoByExamIdUsingPost(
+    public static getListExamResultVoByExamIdUsingPost(
         examResultQueryRequest: ExamResultQueryRequest,
-    ): CancelablePromise<BaseResponse_Page_ExamResult_ | any> {
+    ): CancelablePromise<BaseResponse_List_ExamResultVO_ | any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/exam/examResult/list/page/vo',
+            url: '/api/exam/examResult/list/vo',
             body: examResultQueryRequest,
             errors: {
                 401: `Unauthorized`,

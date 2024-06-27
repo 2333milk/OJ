@@ -106,6 +106,27 @@ export class QuestionControllerService {
         });
     }
     /**
+     * addListQuestion
+     * @param questionAddRequestList questionAddRequestList
+     * @returns BaseResponse_boolean_ OK
+     * @returns any Created
+     * @throws ApiError
+     */
+    public static addListQuestionUsingPost(
+        questionAddRequestList: Array<QuestionAddRequest>,
+    ): CancelablePromise<BaseResponse_boolean_ | any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/question/list/add',
+            body: questionAddRequestList,
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+    /**
      * listQuestionVOByPage
      * @param questionQueryRequest questionQueryRequest
      * @returns BaseResponse_Page_QuestionVO_ OK

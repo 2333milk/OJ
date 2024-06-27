@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { Message } from '@arco-design/web-vue';
-import { QuestionControllerService,  type QuestionSubmitAddRequest, type QuestionVO } from '@/api';
+import { QuestionControllerService, SendboxControllerService, type ExcuteCodeRequest, type QuestionSubmitAddRequest, type QuestionVO } from '@/api';
 import { onMounted, ref, withDefaults, defineProps } from 'vue';
 import CodeEditer from '@/components/CodeEditer.vue';
 import MdViewer from '@/components/MdViewer.vue';
+import { languages } from 'monaco-editor';
 
 
 const question = ref<QuestionVO>();
@@ -36,15 +37,38 @@ const form = ref<QuestionSubmitAddRequest>({
         "        System.out.println((a+b));\n" +
         "    }\n" +
         "}",
-    questionId:props.id as any,
+    questionId: props.id as any,
 });
 
 const doSubmit = async () => {
-    const res = await  QuestionControllerService.doSubmitUsingPost(form.value);
+    const res = await QuestionControllerService.doSubmitUsingPost(form.value);
     if (res.code == 0) {
         Message.success("提交成功");
     } else {
         Message.error("提交失败，" + res.message);
+    }
+}
+const sendboxDebug = ref({} as ExcuteCodeRequest);
+const inputCase = ref();
+const output = ref();
+const watchLastSubmit = () => {
+
+}
+const onChangeAnswer = (v: string) => {
+};
+const doDebug = async () => {
+    sendboxDebug.value.inputlist = [inputCase.value];
+    sendboxDebug.value.language = form.value.language;
+    sendboxDebug.value.code = form.value.code;
+    const res = await SendboxControllerService.executeCodeUsingPost(sendboxDebug.value);
+    if (res.code == 0) {
+        if(res.data.status==1){
+            output.value = res.data.outputlist[0];
+        }else{
+            output.value = res.data.message;
+        }
+    } else {
+        Message.error("测试错误," + res.message);
     }
 }
 </script>
@@ -67,38 +91,50 @@ const doSubmit = async () => {
                                     {{ question.judgeConfig?.stackLimit ?? 0 }}
                                 </a-descriptions-item>
                             </a-descriptions>
-                            <MdViewer :value="question.content" />
+                            <MdViewer :value="question.content" :handle-change="onChangeAnswer" :mode="'split'" />
                             <template #extra>
                                 <a-space>
-                                    <a-tag v-for="(tag, index) of question.tags" :key="index" color="blue" >{{
-                                        tag }}</a-tag>
+                                    <a-tag v-for="(tag, index) of question.tags" :key="index" color="blue">{{
+                tag }}</a-tag>
                                 </a-space>
                             </template>
                         </a-card>
                     </a-tab-pane>
-                    <a-tab-pane key="2" title="评论">
+                    <!-- <a-tab-pane key="2" title="评论">
                         待完善
                     </a-tab-pane>
                     <a-tab-pane key="3" title="题解">
                         待完善
-                    </a-tab-pane>
+                    </a-tab-pane> -->
                 </a-tabs>
             </a-col>
             <a-col :span="12">
-                <a-form :model="form" layout="inline">
-                    <a-form-item field="title" labal="编程语言">
-                        <a-select :style="{ width: '100px' }" v-model="form.language" placeholder="请选择编程语言">
-                            <a-option>java</a-option>
-<!--                            <a-option>c++</a-option>-->
-<!--                            <a-option>go</a-option>-->
-                        </a-select>
-                    </a-form-item>
-                </a-form>
-                <CodeEditer style="margin-left: 16px" :language="form.language" v-model="form.code"/>
-                <a-divider :size="0" />
-                <a-button type="primary" style="min-width: 200px;margin-left: 14px" @click="doSubmit()">提交代码</a-button>
+                <a-select style="width: 100px;margin-left: 16px;" v-model="form.language" placeholder="请选择编程语言">
+                    <a-option>java</a-option>
+                    <!--                            <a-option>c++</a-option>-->
+                    <!--                            <a-option>go</a-option>-->
+                </a-select>
+                <CodeEditer style="margin-left: 16px;margin-top: 10px" :language="form.language" v-model="form.code" />
+                <a-tabs default-active-key="1">
+                    <a-tab-pane key="1" title="在线调试">
+                        <a-typography-title :heading="6">
+                            测试用例
+                        </a-typography-title>
+                        <a-textarea v-model="inputCase" />
+                        <div v-if="output != undefined">
+                            <a-typography-title :heading="6">
+                                测试结果
+                            </a-typography-title>
+                            <a-textarea v-model="output" />
+                        </div>
+                        <a-button type="primary" @click="doDebug()">测试</a-button>
+                    </a-tab-pane>
+                </a-tabs>
             </a-col>
         </a-row>
+        <!-- <a-button style="min-width: 200px;margin-left: 35%;margin-top: 30px;" @click="watchLastSubmit()">查看上次提交</a-button> -->
+        <a-button type="primary" style="min-width: 200px;margin-left: 50%;margin-top: 30px;"
+            @click="doSubmit()">提交本题作答</a-button>
     </div>
 </template>
 

@@ -1,21 +1,38 @@
 <template>
   <div id="main" style="width: 100%; height: 400px"></div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 //  按需引入 echarts
 import * as echarts from "echarts";
-let props = defineProps(["paper_id", "title", "class_id"]);
-let namedata = ref();
-let scoredata = ref();
+import { ExamControllerService, type ExamResultVO } from "@/api";
+import { Message } from "@arco-design/web-vue";
+import { reactive } from "vue";
+let props = defineProps(["exam_id", "exam_title"]);
+let namedata = ref([] as string[]);
+let scoredata = ref([] as number[]);
+const examResultVO = reactive<ExamResultVO[]>([])
 onMounted(() => {
   init();
-});
-function init() {
+})
 
-      // scoredata = Array.from(Object.values(res.data.scoredata));
-      // namedata = Array.from(Object.values(res.data.namedata));
-      // initEchart();
+async function init() {
+  const res = await ExamControllerService.getListExamResultVoByExamIdUsingPost({ examId: props.exam_id });
+  if (res.code == 0) {
+    examResultVO.push(...res.data);
+    examResultVO.forEach((examResult,dataIndex)=>{
+      if(examResult.user?.userName!=undefined){
+        namedata.value.push(examResult.user?.userName);
+      }
+      if(examResult.score!=undefined){
+        scoredata.value.push(examResult.score);
+      }
+    })
+    initEchart();
+  } else {
+    Message.error("加载数据错误," + res.message);
+  }
+
 }
 function initEchart() {
   // 基于准备好的dom，初始化echarts实例
@@ -23,21 +40,21 @@ function initEchart() {
   // 指定图表的配置项和数据
   var option = {
     title: {
-      text: props.title,
+      text: props.exam_title,
     },
     tooltip: {},
     legend: {
       data: [],
     },
     xAxis: {
-      data: namedata,
+      data: namedata.value,
     },
     yAxis: {},
     series: [
       {
         name: "销量",
         type: "bar",
-        data: scoredata,
+        data: scoredata.value,
       },
     ],
   };

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-
+import * as XLSX from 'xlsx';
 import { Message } from '@arco-design/web-vue';
 import { QuestionControllerService, type JudgeCase, type JudgeConfig, type QuestionAddRequest, type QuestionUpdateRequest, type QuestionVO } from '@/api';
 import { onMounted, ref, watchEffect } from 'vue';
@@ -189,13 +189,68 @@ const rules = {
 /**
  * 确认提交，重载数据
  */
- const handleSubmit = () => {
-    searchParams.value = {
-        ...searchParams.value,
-        current:1,
-    }
+const handleSubmit = () => {
+  searchParams.value = {
+    ...searchParams.value,
+    current: 1,
+  }
 };
 
+const file = ref();
+const visibleModel = ref(false);
+const questionlist = ref();
+const listAdd = () => {
+  visibleModel.value = true;
+}
+
+const handleOkModel = async() => {
+  const res = await QuestionControllerService.addListQuestionUsingPost(questionlist.value);
+  if(res.code==0){
+    visibleModel.value = false;
+  }else {
+    Message.error("导入失败," + res.message);
+  }
+  
+};
+const handleCancelModel = () => {
+  visibleModel.value = false;
+}
+const handleUpload = (file: any) => {
+  questionlist.value = undefined;
+  const reader = new FileReader();
+  reader.onload = (e: ProgressEvent<FileReader>) => {
+    const data = new Uint8Array(e.target.result as ArrayBuffer);
+    const workbook = XLSX.read(data, { type: 'array' });
+    // 假设第一个工作表包含问题数据  
+    const worksheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[worksheetName];
+
+    // 将工作表数据转换为 JSON 数组  
+    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 2 }); // 假设第一行是标题行  
+
+    // 将 JSON 数组转换为 QuestionAddRequest 类型的数组  
+    const questionsArray: Array<QuestionAddRequest> = jsonData.map(row => {
+      // 这里你可能需要根据你的 Excel 文件的列来映射到 QuestionAddRequest 的属性  
+      // 假设列的顺序和内容与 QuestionAddRequest 的属性匹配  
+      const question: QuestionAddRequest = {
+        answer: row.answer,
+        content: row.content,
+        // 对于 judgeCase 和 judgeConfig，你可能需要额外的逻辑来解析复杂的对象  
+        // 例如，如果它们在 Excel 中以 JSON 字符串的形式存储  
+        judgeCase: row.judgeCase ? JSON.parse(row.judgeCase) : undefined,
+        judgeConfig: row.judgeConfig ? JSON.parse(row.judgeConfig) : undefined,
+        tags: row.tags?JSON.parse(row.tags):undefined, // 假设 tags 是以逗号分隔的字符串  
+        title: row.title,
+      };
+      return question;
+    });
+    // 更新 questions 引用  
+    questionlist.value = questionsArray;
+    console.log(questionlist.value);
+  };
+  reader.readAsArrayBuffer(file);
+  return true;
+}
 
 </script>
 
@@ -211,6 +266,7 @@ const rules = {
       <a-form-item>
         <a-button type="primary" html-type="submit">搜索</a-button>
         <a-button type="primary" @click="doAdd()" style="margin-left: 500px;">新增题目</a-button>
+        <a-button type="primary" @click="listAdd()" style="margin-left: 20px;">批量导入</a-button>
       </a-form-item>
     </a-form>
     <a-divider :size="0" />
@@ -228,6 +284,15 @@ const rules = {
         </a-space>
       </template>
     </a-table>
+    <a-modal v-model:visible="visibleModel" @ok="handleOkModel" @cancel="handleCancelModel">
+      <template #title>
+        批量导入
+      </template>
+      <a-upload action="/" :auto-upload="false" :file-list="file" :limit="1" @before-upload="handleUpload" 
+       accept=".xlsx, .xls" />
+      <a-link href="//localhost:5173/src/assets/%E7%A4%BA%E4%BE%8B.xlsx"
+        style="margin-left: 410px;margin-top: 10px;">下载示例</a-link>
+    </a-modal>
     <a-drawer :width="750" v-model:visible="visible">
       <template #title>
         <div v-if="statusChange === 1">新建考试 </div>
@@ -241,13 +306,13 @@ const rules = {
         <a-form-item field="tags" label="题目标签">
           <a-input-tag v-model="form.tags" placeholder="输入题目标签" />
         </a-form-item>
-        <a-form-item field="answer" tooltip="请输入答案" label="答案">
-          <MdEditer class="mdEditer" v-model="form.answer" :value="form.answer" :mode="'split'"
-            :handle-change="onChangeAnswer" placeholder="请输入" />
-        </a-form-item>
         <a-form-item field="content" tooltip="请输入内容" label="内容">
           <MdEditer class="mdEditer" v-model="form.content" :value="form.content" :mode="'split'"
             :handle-change="onChangeContext" placeholder="please enter your post..." />
+        </a-form-item>
+        <a-form-item field="answer" tooltip="请输入答案" label="答案">
+          <MdEditer class="mdEditer" v-model="form.answer" :value="form.answer" :mode="'split'"
+            :handle-change="onChangeAnswer" placeholder="请输入" />
         </a-form-item>
         <a-form-item field="judgeConfig" label="判题配置" :content-flex="false" :merge-props="false"
           v-if="form.judgeConfig">
@@ -296,9 +361,13 @@ const rules = {
 
 </template>
 
-<style scoped>
+<style>
 #manageQuestion {
   min-width: 1280px;
   margin: 0 auto;
+}
+
+.arco-upload-list-item .arco-upload-progress {
+  display: none;
 }
 </style>

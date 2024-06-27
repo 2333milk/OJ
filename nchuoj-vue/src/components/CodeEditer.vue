@@ -1,5 +1,5 @@
 <template>
-  <div ref="codeEditBox" class="codeEditBox" style="min-height: 450px;height: 70vh;"></div>
+  <div ref="codeEditBox" class="codeEditBox" style="min-height: 350px;height: 70vh;"></div>
 </template>
 
 <script lang="ts">

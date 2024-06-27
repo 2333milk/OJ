@@ -11,6 +11,7 @@ import com.jueye.nchuojbackendcommon.exception.BusinessException;
 import com.jueye.nchuojbackendcommon.exception.ThrowUtils;
 import com.jueye.nchuojbackendcommon.utils.SqlUtils;
 import com.jueye.nchuojbackendexamservice.mapper.ExamMapper;
+import com.jueye.nchuojbackendexamservice.mapper.ExamResultMapper;
 import com.jueye.nchuojbackendexamservice.service.ExamQuestionService;
 import com.jueye.nchuojbackendexamservice.service.ExamResultService;
 import com.jueye.nchuojbackendexamservice.service.ExamService;
@@ -42,7 +43,7 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam>
     private ExamQuestionService examQuestionService;
 
     @Resource
-    private ExamResultService examResultService;
+    private ExamResultMapper examResultMapper;
 
     @Resource
     private QuestionFeignClient questionFeignClient;
@@ -171,7 +172,7 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam>
             });
         });
         examResultMap.forEach((userId,examResult) ->{
-            examResultService.save(examResult);
+            examResultMapper.insert(examResult);
         });
     }
 

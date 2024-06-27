@@ -2,10 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type ExamQuestionEditRequest = {
-    examId?: number;
+import type { ExamVO } from './ExamVO';
+import type { UserVO } from './UserVO';
+export type ExamResultVO = {
+    exam?: ExamVO;
     id?: number;
-    questionId?: number;
     score?: number;
+    user?: UserVO;
 };
 
