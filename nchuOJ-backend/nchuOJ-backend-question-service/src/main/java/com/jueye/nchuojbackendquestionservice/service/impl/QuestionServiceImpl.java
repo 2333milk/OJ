@@ -101,6 +101,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         Long userId = questionQueryRequest.getUserId();
         String sortField = questionQueryRequest.getSortField();
         String sortOrder = questionQueryRequest.getSortOrder();
+        Integer status = questionQueryRequest.getStatus();
 
         queryWrapper.like(StringUtils.isNotBlank(title), "title", title);
         queryWrapper.like(StringUtils.isNotBlank(content), "content", content);
@@ -112,6 +113,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         }
         queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
         queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(status), "status", status);
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
                 sortField);
         return queryWrapper;

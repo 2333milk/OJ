@@ -1,0 +1,54 @@
+version: '3'
+services:
+  nchuoj-backend-gateway:
+    container_name: nchuoj-backend-gateway
+    build:
+      context: ./nchuoj-backend-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8101:8101"
+    networks:
+      - mynetwork
+
+  nchuoj-backend-user-service:
+    container_name: nchuoj-backend-user-service
+    build:
+      context: ./nchuoj-backend-user-service
+      dockerfile: Dockerfile
+    ports:
+      - "8102:8102"
+    networks:
+      - mynetwork
+    depends_on:
+      - nchuoj-backend-gateway
+
+  nchuoj-backend-question-service:
+    container_name: nchuoj-backend-question-service
+    build:
+      context: ./nchuoj-backend-question-service
+      dockerfile: Dockerfile
+    ports:
+      - "8103:8103"
+    networks:
+      - mynetwork
+    depends_on:
+      - nchuoj-backend-user-service
+      - nchuoj-backend-gateway
+
+  nchuoj-backend-judge-service:
+    container_name: nchuoj-backend-judge-service
+    build:
+      context: ./nchuoj-backend-judge-service
+      dockerfile: Dockerfile
+    ports:
+      - "8104:8104"
+    networks:
+      - mynetwork
+    depends_on:
+      - nchuoj-backend-user-service
+      - nchuoj-backend-question-service
+      - nchuoj-backend-gateway
+
+# 网络，不定义的话就是默认网络
+networks:
+  mynetwork:

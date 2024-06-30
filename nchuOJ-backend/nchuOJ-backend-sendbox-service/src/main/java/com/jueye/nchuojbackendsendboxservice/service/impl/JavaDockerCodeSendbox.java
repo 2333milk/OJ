@@ -1,4 +1,4 @@
-package com.jueye.nchuojbackendsendboxservice.impl;
+package com.jueye.nchuojbackendsendboxservice.service.impl;
 
 import cn.hutool.core.date.StopWatch;
 import cn.hutool.core.io.resource.ResourceUtil;
@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 @Component
-public class JavaDockerCodeSendbox extends JavaCodeSendboxTemplate {
+public class JavaDockerCodeSendbox extends CodeSendboxTemplate {
 
     public static final Boolean FIRST_INIT = true;
     //时间限制

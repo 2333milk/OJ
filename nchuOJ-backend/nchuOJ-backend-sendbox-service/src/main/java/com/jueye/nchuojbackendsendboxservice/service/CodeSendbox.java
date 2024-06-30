@@ -1,4 +1,4 @@
-package com.jueye.nchuojbackendsendboxservice.impl;
+package com.jueye.nchuojbackendsendboxservice.service;
 
 
 import com.jueye.nchuojbackendmodel.model.dto.sandbox.ExcuteCodeRequest;
@@ -11,5 +11,5 @@ public interface CodeSendbox {
      * @param excuteCodeRequest
      * @return
      */
-    ExcuteCodeResponse excuteCode(ExcuteCodeRequest excuteCodeRequest) throws InterruptedException;
+    ExcuteCodeResponse excuteCode(ExcuteCodeRequest excuteCodeRequest);
 }

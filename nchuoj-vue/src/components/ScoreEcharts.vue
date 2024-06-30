@@ -12,11 +12,18 @@ let props = defineProps(["exam_id", "exam_title"]);
 let namedata = ref([] as string[]);
 let scoredata = ref([] as number[]);
 const examResultVO = reactive<ExamResultVO[]>([])
+
+watch(props.exam_id,() => {
+  init();
+});
+
 onMounted(() => {
   init();
 })
 
 async function init() {
+  namedata.value = [] as string[];
+  scoredata.value = [] as number[];
   const res = await ExamControllerService.getListExamResultVoByExamIdUsingPost({ examId: props.exam_id });
   if (res.code == 0) {
     examResultVO.push(...res.data);
@@ -32,7 +39,6 @@ async function init() {
   } else {
     Message.error("加载数据错误," + res.message);
   }
-
 }
 function initEchart() {
   // 基于准备好的dom，初始化echarts实例
@@ -52,7 +58,7 @@ function initEchart() {
     yAxis: {},
     series: [
       {
-        name: "销量",
+        name: "分数",
         type: "bar",
         data: scoredata.value,
       },

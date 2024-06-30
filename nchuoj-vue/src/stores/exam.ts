@@ -1,7 +1,6 @@
 import { reactive, ref} from 'vue'
 import { defineStore } from 'pinia'
 import {Message} from "@arco-design/web-vue";
-import { start } from 'repl';
 import { ExamControllerService, type ExamVO } from '@/api';
 
 export const useExamStore = defineStore('exam', () => {
@@ -14,6 +13,7 @@ export const useExamStore = defineStore('exam', () => {
         exam.startTime = examNew.startTime; 
         if(exam.endTime!=undefined&&exam.startTime!=undefined){
             let count = (new Date(exam.endTime).getTime()-new Date(exam.startTime).getTime());
+            setTimeout(nearEndExam,count-5*60*1000);
             setTimeout(endExam,count);
         } 
     }
@@ -22,8 +22,12 @@ export const useExamStore = defineStore('exam', () => {
   async function endExam(){
     const res = await ExamControllerService.endExamUsingGet(exam.id);
     if(res.code==0){
-        Message.success("结束成功");
+        Message.success("考试结束");
     }
+  }
+
+  function nearEndExam(){
+    Message.warning("考试还剩5分钟!");
   }
 
   

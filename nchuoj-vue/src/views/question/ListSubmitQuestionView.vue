@@ -96,12 +96,12 @@ const handleSubmit = () => {
       <a-form-item field="language" labal="编程语言">
         <a-select :allow-clear="true"  v-model="searchParams.language" style="min-width: 220px;" placeholder="请选择编程语言">
           <a-option>java</a-option>
-<!--          <a-option>c++</a-option>-->
-<!--          <a-option>go</a-option>-->
+          <a-option>c</a-option>
+          <a-option>python</a-option>
         </a-select>
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" html-type="submit">提交</a-button>
+        <a-button type="primary" html-type="submit">搜索</a-button>
       </a-form-item>
     </a-form>
     <a-divider :size="0"/>

@@ -56,11 +56,15 @@ public class QuestionVO implements Serializable {
      */
     private List<JudgeCase> judgeCase;
 
-
     /**
      * 判题配置 json数组
      */
     private JudgeConfig judgeConfig;
+
+    /**
+     * 状态 1 公开/0 不公开
+     */
+    private Integer status;
 
     /**
      * 创建用户 id

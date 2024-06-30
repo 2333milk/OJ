@@ -19,7 +19,7 @@ const searchParams = ref({
  * 加载表格数据
  */
 const loadData = async () => {
-  const res = await QuestionControllerService.listQuestionVoByPageUsingPost(searchParams.value);
+  const res = await QuestionControllerService.listMyQuestionVoByPageUsingPost(searchParams.value);
   if (res.code == 0) {
     dataList.value = res.data.records as QuestionVO[];
     total.value = res.data.total;
@@ -59,17 +59,17 @@ const columns = [
   },
   {
     title: '标签',
-    dataIndex: 'tags',
+    slotName: 'tags',
   },
   {
     title: '判题配置',
     dataIndex: 'judgeConfig',
     children: [
       {
-        title: '时间限制',
+        title: '时间限制(ms)',
         dataIndex: 'judgeConfig.timeLimit'
       }, {
-        title: '空间限制',
+        title: '空间限制(Mb)',
         dataIndex: 'judgeConfig.memoryLimit'
       }, {
         title: '堆栈限制',
@@ -145,6 +145,7 @@ const doEdit = (question: QuestionVO) => {
   form.judgeConfig = question.judgeConfig;
   form.tags = question.tags;
   form.title = question.title;
+  form.status = question.status;
   statusChange.value = 2;
   visible.value = true;
 }
@@ -203,14 +204,15 @@ const listAdd = () => {
   visibleModel.value = true;
 }
 
-const handleOkModel = async() => {
+const handleOkModel = async () => {
   const res = await QuestionControllerService.addListQuestionUsingPost(questionlist.value);
-  if(res.code==0){
+  if (res.code == 0) {
     visibleModel.value = false;
-  }else {
+    loadData();
+  } else {
     Message.error("导入失败," + res.message);
   }
-  
+
 };
 const handleCancelModel = () => {
   visibleModel.value = false;
@@ -239,7 +241,7 @@ const handleUpload = (file: any) => {
         // 例如，如果它们在 Excel 中以 JSON 字符串的形式存储  
         judgeCase: row.judgeCase ? JSON.parse(row.judgeCase) : undefined,
         judgeConfig: row.judgeConfig ? JSON.parse(row.judgeConfig) : undefined,
-        tags: row.tags?JSON.parse(row.tags):undefined, // 假设 tags 是以逗号分隔的字符串  
+        tags: row.tags ? JSON.parse(row.tags) : undefined, // 假设 tags 是以逗号分隔的字符串  
         title: row.title,
       };
       return question;
@@ -251,6 +253,8 @@ const handleUpload = (file: any) => {
   reader.readAsArrayBuffer(file);
   return true;
 }
+
+
 
 </script>
 
@@ -265,7 +269,7 @@ const handleUpload = (file: any) => {
       </a-form-item>
       <a-form-item>
         <a-button type="primary" html-type="submit">搜索</a-button>
-        <a-button type="primary" @click="doAdd()" style="margin-left: 500px;">新增题目</a-button>
+        <a-button type="primary" @click="doAdd()" style="margin-left: 400px;">新增题目</a-button>
         <a-button type="primary" @click="listAdd()" style="margin-left: 20px;">批量导入</a-button>
       </a-form-item>
     </a-form>
@@ -277,6 +281,11 @@ const handleUpload = (file: any) => {
       current: searchParams.current,
       total: parseInt(total, 10)
     }">
+      <template #tags="{ record }">
+        <a-space wrap>
+          <a-tag v-for="(tag, index) of record.tags" :key="index" color="blue">{{ tag }}</a-tag>
+        </a-space>
+      </template>
       <template #optional="{ record }">
         <a-space>
           <a-button type="primary" @click="doEdit(record)">修改</a-button>
@@ -288,8 +297,8 @@ const handleUpload = (file: any) => {
       <template #title>
         批量导入
       </template>
-      <a-upload action="/" :auto-upload="false" :file-list="file" :limit="1" @before-upload="handleUpload" 
-       accept=".xlsx, .xls" />
+      <a-upload action="/" :auto-upload="false" :file-list="file" :limit="1" @before-upload="handleUpload"
+        accept=".xlsx, .xls" />
       <a-link href="//localhost:5173/src/assets/%E7%A4%BA%E4%BE%8B.xlsx"
         style="margin-left: 410px;margin-top: 10px;">下载示例</a-link>
     </a-modal>
@@ -321,7 +330,7 @@ const handleUpload = (file: any) => {
               <a-input-number v-model="form.judgeConfig.timeLimit" placeholder="请输入时间限制" mode="button" size="large"
                 class="input-demo" />
             </a-form-item>
-            <a-form-item field="judgeConfig.memoryLimit" label="内存限制 kb">
+            <a-form-item field="judgeConfig.memoryLimit" label="内存限制 Mb">
               <a-input-number v-model="form.judgeConfig.memoryLimit" placeholder="请输入内存限制" mode="button" size="large"
                 class="input-demo" />
             </a-form-item>
@@ -329,7 +338,6 @@ const handleUpload = (file: any) => {
               <a-input-number v-model="form.judgeConfig.stackLimit" placeholder="请输入堆栈限制" mode="button" size="large"
                 class="input-demo" />
             </a-form-item>
-
           </a-space>
         </a-form-item>
         <a-form-item field="judgeCase" label="测试用例" :content-flex="false" :merge-props="false">
@@ -348,6 +356,12 @@ const handleUpload = (file: any) => {
           <div>
             <a-button type="outline" status="success" @click="handleAdd">新增测试用例</a-button>
           </div>
+        </a-form-item>
+        <a-form-item>
+          <a-radio-group v-model="form.status">
+            <a-radio :value="1">公开</a-radio>
+            <a-radio :value="0">私有</a-radio>
+          </a-radio-group>
         </a-form-item>
         <a-form-item>
           <a-button type="primary" html-type="submit" :style="{ width: '200px' }">提交</a-button>

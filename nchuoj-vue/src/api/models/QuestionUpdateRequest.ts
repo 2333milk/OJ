@@ -13,6 +13,7 @@ export type QuestionUpdateRequest = {
     isDelete?: number;
     judgeCase?: Array<JudgeCase>;
     judgeConfig?: JudgeConfig;
+    status?:number;
     submitNum?: number;
     tags?: Array<string>;
     title?: string;

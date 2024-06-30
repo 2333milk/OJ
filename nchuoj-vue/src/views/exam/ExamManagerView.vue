@@ -21,6 +21,7 @@ const loadData = async () => {
     if (res.code == 0) {
         examList.value = res.data.records;
         total.value = res.data.total;
+        
     } else {
         Message.error("加载数据错误," + res.message);
     }
@@ -216,6 +217,7 @@ const questionHandleSubmit = async () => {
     if (res.code == 0) {
         questionList.value = res.data.records as QuestionVO[];
         total.value = res.data.total;
+        
     } else {
         Message.error("加载数据错误," + res.message);
     }

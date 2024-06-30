@@ -1,4 +1,4 @@
-package com.jueye.nchuojbackendsendboxservice.impl;
+package com.jueye.nchuojbackendsendboxservice.service.impl;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.dfa.FoundWord;
@@ -7,7 +7,7 @@ import com.jueye.nchuojbackendmodel.model.dto.sandbox.ExcuteCodeRequest;
 import com.jueye.nchuojbackendmodel.model.dto.sandbox.ExcuteCodeResponse;
 import com.jueye.nchuojbackendmodel.model.dto.sandbox.ExecuteMessage;
 import com.jueye.nchuojbackendmodel.model.dto.sandbox.JudgeInfo;
-import com.jueye.nchuojbackendsendboxservice.utils.ProcessUtils;
+import com.jueye.nchuojbackendsendboxservice.service.CodeSendbox;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -21,18 +21,17 @@ import java.util.UUID;
  * java代码沙箱模板
  */
 @Component
-public class JavaCodeSendboxTemplate implements CodeSendbox {
-    private static final String GLOBAL_CODE_DIR_NAME = "tmpCode";
+public class CodeSendboxTemplate implements CodeSendbox {
+    public static final String GLOBAL_CODE_DIR_NAME = "tmpCode";
 
-    private static final String GLOBAL_JAVA_CLASS_NAME = "Main.java";
 
-    private static final String USER_DIR = System.getProperty("user.dir");
+    public static final String USER_DIR = System.getProperty("user.dir");
 
-    private static final String globalCodePathName = USER_DIR+ File.separator+GLOBAL_CODE_DIR_NAME;
+    public static final String globalCodePathName = USER_DIR+ File.separator+GLOBAL_CODE_DIR_NAME;
 
-    private static final List<String> blackList = Arrays.asList("exec","File");
+    public static final List<String> blackList = Arrays.asList("exec","File");
 
-    private static final WordTree WORD_TREE ;
+    public static final WordTree WORD_TREE ;
 
 
     static {
@@ -77,14 +76,7 @@ public class JavaCodeSendboxTemplate implements CodeSendbox {
      * @return
      */
     public File saveCodeToFile(String code,String userCodeParentPath){
-        //判断全局代码目录是否存在,若不存在则创建
-        if(FileUtil.exist(globalCodePathName)){
-            FileUtil.mkdir(globalCodePathName);
-        }
-        //将客户端的代码隔离存放
-        String userCodePath = userCodeParentPath + File.separator +GLOBAL_JAVA_CLASS_NAME;
-        File userCodeFile = FileUtil.writeString(code,userCodePath, StandardCharsets.UTF_8);
-        return userCodeFile;
+        return  null;
     }
 
     /**
@@ -93,27 +85,9 @@ public class JavaCodeSendboxTemplate implements CodeSendbox {
      */
     public void compileCode(ExcuteCodeResponse excuteCodeResponse,File userCodeFile){
 
-        String compileCmd = String.format("javac -encoding utf-8 %s",userCodeFile.getAbsoluteFile());
-        ExecuteMessage compileExecuteMessage = ProcessUtils.runProcess(compileCmd);
-        if(compileExecuteMessage.getExitValue()!=0){
-            excuteCodeResponse.setMessage(compileExecuteMessage.getErrorMessage());
-            excuteCodeResponse.setOutputlist(null);
-            excuteCodeResponse.setStatus(3);
-            excuteCodeResponse.setJudgeInfo(new JudgeInfo());
-            throw new RuntimeException("编译错误");
-        }
     }
     public List<ExecuteMessage> runCode(File userCodeFile, List<String> inputlist){
-        List<ExecuteMessage> executeMessageList = new ArrayList<>();
-        for(String inputArgs: inputlist){
-            String runCmd = String.format("java -Xmx256m -Dfile.encoding=UTF-8 -cp %s Main %s",userCodeFile.getParentFile().getAbsoluteFile(),inputArgs);
-            //命令行传参
-            ExecuteMessage runExecuteMessage = ProcessUtils.runProcess(runCmd);
-            //交互传参
-            //ExecuteMessage runExecuteMessage = ProcessUtils.runInteractProcess(runCmd,inputArgs);
-            executeMessageList.add(runExecuteMessage);
-        }
-        return executeMessageList;
+        return null;
     }
 
     /**

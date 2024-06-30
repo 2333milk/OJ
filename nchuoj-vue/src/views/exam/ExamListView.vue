@@ -73,6 +73,7 @@ const handleSubmit = () => {
 };
 const router = useRouter();
 const startExam = (exam: ExamVO) => {
+    console.log(exam);
     router.push({
         path: `/submit/exam/${exam.id}`,
     })
@@ -113,7 +114,7 @@ const queryScore = async(exam:ExamVO)=>{
                 }}</template>
             <template #optional="{ record }">
                 <a-space size="medium">
-                    <a-button v-if="now.getTime()+28800000*2 > new Date(record.endTime).getTime()" type="primary"
+                    <a-button v-if="now.getTime()+28800000 > new Date(record.endTime).getTime()+1000*60*60*2" type="primary"
                         @click="queryScore(record)">查询成绩</a-button>
                     <a-button v-else-if="now.getTime()+28800000 > new Date(record.endTime).getTime()" type="primary"
                         disabled>已结束</a-button>

@@ -5,6 +5,7 @@ import { onMounted, ref, withDefaults, defineProps } from 'vue';
 import CodeEditer from '@/components/CodeEditer.vue';
 import MdViewer from '@/components/MdViewer.vue';
 import { languages } from 'monaco-editor';
+import { useRouter } from 'vue-router';
 
 
 const question = ref<QuestionVO>();
@@ -29,14 +30,8 @@ onMounted(() => {
 });
 
 const form = ref<QuestionSubmitAddRequest>({
-    language: "java",
-    code: "public class Main{\n" +
-        "    public static void main(String[] args){\n" +
-        "        int a = Integer.parseInt(args[0]);\n" +
-        "        int b = Integer.parseInt(args[1]);\n" +
-        "        System.out.println((a+b));\n" +
-        "    }\n" +
-        "}",
+    language: undefined,
+    code: undefined,
     questionId: props.id as any,
 });
 
@@ -70,6 +65,34 @@ const doDebug = async () => {
     } else {
         Message.error("测试错误," + res.message);
     }
+}
+
+const languageChange = ()=>{
+    if(form.value.language==="java"){
+        form.value.code = "public class Main{\n" +
+        "    public static void main(String[] args){\n" +
+        "        int a = Integer.parseInt(args[0]);\n" +
+        "        int b = Integer.parseInt(args[1]);\n" +
+        "        System.out.println((a+b));\n" +
+        "    }\n" +
+        "}";
+    }else if(form.value.language==="c"){
+        form.value.code = "#include <stdio.h>\n"+
+        "void main(int argc,char** argv){\n"+
+        "    printf(\"%s\",argc[0]+argc[1]);\n"+
+        "}";
+    }else if(form.value.language==="python"){
+        form.value.code = "#!/usr/bin/python\n"+
+            "# -*- coding: UTF-8 -*-\n\n"+
+            "import sys\n\n"+
+            "print '参数个数为:', len(sys.argv), '个参数。'\n"+
+            "print '参数列表:', str(sys.argv);\n";
+    }
+}
+const router = useRouter();
+
+const backTo = ()=>{
+    router.back();
 }
 </script>
 
@@ -109,11 +132,12 @@ const doDebug = async () => {
                 </a-tabs>
             </a-col>
             <a-col :span="12">
-                <a-select style="width: 100px;margin-left: 16px;" v-model="form.language" placeholder="请选择编程语言">
+                <a-select style="width: 150px;margin-left: 16px;" @change="languageChange" v-model="form.language" placeholder="请选择编程语言">
                     <a-option>java</a-option>
-                    <!--                            <a-option>c++</a-option>-->
-                    <!--                            <a-option>go</a-option>-->
+                    <a-option>c</a-option>
+                    <a-option>python</a-option>
                 </a-select>
+                <a-button type="primary" size="small" style="margin-left: 450px;" @click="backTo">返回</a-button>
                 <CodeEditer style="margin-left: 16px;margin-top: 10px" :language="form.language" v-model="form.code" />
                 <a-tabs default-active-key="1">
                     <a-tab-pane key="1" title="在线调试">
@@ -127,7 +151,7 @@ const doDebug = async () => {
                             </a-typography-title>
                             <a-textarea v-model="output" />
                         </div>
-                        <a-button type="primary" @click="doDebug()">测试</a-button>
+                        <a-button type="primary"  @click="doDebug()">测试</a-button>
                     </a-tab-pane>
                 </a-tabs>
             </a-col>

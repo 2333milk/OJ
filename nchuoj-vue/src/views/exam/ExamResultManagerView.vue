@@ -78,9 +78,9 @@ const handleOk = () => {
 const handleCancel = () => {
     visible.value = false;
 }
-const watchScores = async (exam: ExamVO) => {
-    exam.id = exam.id;
-    exam.title = exam.title;
+const watchScores = async (examVO: ExamVO) => {
+    exam.id = examVO.id;
+    exam.title = examVO.title;
     visible.value = true;
 }
 type examResult = {
@@ -144,7 +144,7 @@ const exportExcel = async (exam: ExamVO) => {
         </a-table>
         <a-modal v-model:visible="visible" @ok="handleOk" @cancel="handleCancel">
             <template #title>
-                {{ exam.title }}
+                成绩统计图
             </template>
             <ScoreEcharts v-if="visible" :exam_id="exam.id" :exam_title="exam.title" />
         </a-modal>

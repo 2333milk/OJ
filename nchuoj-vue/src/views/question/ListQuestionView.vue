@@ -9,6 +9,7 @@ const total = ref();
 const dataList = ref([]);
 const searchParams = ref<QuestionQueryRequest>({
     title: '',
+    status:1,
     tags: [],
     pageSize: 5,
     current: 1,
@@ -23,7 +24,7 @@ const loadData = async () => {
     const res = await QuestionControllerService.listQuestionVoByPageUsingPost(searchParams.value);
     if (res.code == 0) {
         dataList.value = res.data.records;
-        total.value = res.data.total;
+        total.value = res.data.total;   
     } else {
         Message.error("加载数据错误," + res.message);
     }
@@ -92,7 +93,7 @@ const handleSubmit = () => {
                 <a-input-tag v-model="searchParams.tags" placeholder="输入题目标签" style="min-width: 240px;"/>
             </a-form-item>
             <a-form-item>
-                <a-button type="primary" html-type="submit">提交</a-button>
+                <a-button type="primary" html-type="submit">搜索</a-button>
             </a-form-item>
         </a-form>
         <a-divider :size="0"/>
